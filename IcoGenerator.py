@@ -13,13 +13,16 @@ class IcoGenerator:
     @classmethod
     def generate(cls, src_file: GDO_File):
         path = src_file.get_path()
-        Files.create_dir(Application.temp_path('assets/'))
-        cls._generate_b(path, 'assets/favicon32.png', 'PNG', (32, 32))
-        cls._generate_b(path, 'assets/favicon180.png', 'PNG', (180, 180))
-        cls._generate_b(path, 'assets/favicon192.png', 'PNG', (192, 192))
-        cls._generate_b(path, 'assets/favicon512.png', 'PNG', (512, 512))
-        cls._generate_b(path, 'assets/favicon.ico', 'ICO', (32, 32))
-        cls.generate_manifest()
+
+        from gdo.core.module_core import module_core
+        base = module_core.instance().assets_path()
+        # Files.create_dir(Application.temp_path('assets/'))
+
+        cls._generate_b(path, f'{base}favicon32.png', 'PNG', (32, 32))
+        cls._generate_b(path, f'{base}favicon180.png', 'PNG', (180, 180))
+        cls._generate_b(path, f'{base}favicon192.png', 'PNG', (192, 192))
+        cls._generate_b(path, f'{base}favicon512.png', 'PNG', (512, 512))
+        cls._generate_b(path, f'{base}favicon.ico', 'ICO', (32, 32))
 
     @classmethod
     def _generate_b(cls, src_path: str, dest_path: str, to_fmt: str, dim: tuple[int, int]):
@@ -29,7 +32,7 @@ class IcoGenerator:
             new_path = ImageConverter.convert(src_path, Application.temp_path(dest_path), to_fmt, dim)
             gdo_file = GDO_File.blank({
                 'file_name': Strings.rsubstr_from(dest_path, '/', dest_path),
-                'file_size': Files.size(new_path),
+                'file_size': str(Files.size(new_path)),
                 'file_mime': Files.mime(new_path),
                 'file_hash': Files.md5(new_path),
                 'file_width': str(dim[0]),

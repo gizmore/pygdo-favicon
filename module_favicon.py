@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+from functools import lru_cache
+
 from gdo.base.Application import Application
 from gdo.base.GDO_Module import GDO_Module
 from gdo.base.GDT import GDT
 
 from typing import TYPE_CHECKING, Self
 
+from gdo.base.Util import module_config_var
 from gdo.core.GDO_File import GDO_File
 from gdo.favicon.IcoGenerator import IcoGenerator
 from gdo.ui.GDT_Color import GDT_Color
@@ -42,16 +45,18 @@ class module_favicon(GDO_Module):
     async def favicon_changed(self, module: Self, gdt: GDT_Image):
         if image := module.cfg_favicon_original():
             IcoGenerator.generate(image)
+        IcoGenerator.generate_manifest()
 
     async def manifest_changed(self, module: Self, gdt: GDT_Image):
         IcoGenerator.generate_manifest()
 
     def gdo_init_sidebar(self, page: 'GDT_Page'):
-        rev = self.CORE_REV
-        page.__class__._meta += f"""
+        rev = self.cache_key()
+        self.application().STORAGE.meta_inline += f'<meta name="theme-color" content="#{self.cfg_theme_color()[2:]}">'
+        self.application().STORAGE.link_inline += f"""
         <link rel="icon" href="/assets/favicon.ico?v={rev}" sizes="any">
         <link rel="icon" type="image/png" href="/assets/favicon32.png?v={rev}" sizes="32x32">
+        <link rel="icon" type="image/png" href="/assets/favicon180.png?v={rev}" sizes="180x180">
+        <link rel="icon" type="image/png" href="/assets/favicon512.png?v={rev}" sizes="512x512">
         <link rel="apple-touch-icon" href="/assets/favicon180.png?v={rev}">
-        <link rel="manifest" href="/assets/manifest.json?v={rev}">
-        <meta name="theme-color" content="#{self.cfg_theme_color()[2:]}">
-        """
+        <link rel="manifest" href="/assets/manifest.json?v={rev}">"""
