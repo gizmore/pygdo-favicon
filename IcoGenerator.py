@@ -14,9 +14,7 @@ class IcoGenerator:
     def generate(cls, src_file: GDO_File):
         path = src_file.get_path()
 
-        from gdo.core.module_core import module_core
-        base = module_core.instance().assets_path()
-        # Files.create_dir(Application.temp_path('assets/'))
+        base = Application.config('dir.assets')
 
         cls._generate_b(path, f'{base}favicon32.png', 'PNG', (32, 32))
         cls._generate_b(path, f'{base}favicon180.png', 'PNG', (180, 180))
