@@ -1,6 +1,9 @@
 from pathlib import Path
 from PIL import Image
 
+from gdo.base.Application import Application
+from gdo.base.Util import Files
+
 
 class ImageConverter:
 
@@ -53,6 +56,8 @@ class ImageConverter:
             if target_fmt == "ico":
                 sizes = [dim] if dim else [(16, 16), (32, 32), (48, 48), (64, 64)]
                 save_kwargs["sizes"] = sizes
+
+            dest.parent.mkdir(int(Application.config('file.mode.dir', '0o0700'), 0), True, True)
 
             im.save(dest, format=target_fmt.upper(), **save_kwargs)
 

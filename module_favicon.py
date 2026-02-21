@@ -52,7 +52,7 @@ class module_favicon(GDO_Module):
     async def manifest_changed(self, module: Self, gdt: GDT_Image):
         IcoGenerator.generate_manifest()
 
-    def gdo_install(self):
+    async def gdo_install(self):
         if not self.cfg_favicon_original():
             path = Random.list_item(['img/chappy.png', 'img/pygdo8.png'])
             favicon = GDO_File.from_path(self.file_path(path)).insert()

@@ -26,7 +26,7 @@ class FunTestCase(GDOTestCase):
         reinstall_module('favicon')
         self.assertIs(type(get_module('favicon')), module_favicon, 'cannot reinstall favicon.')
 
-    async def test_01_no_icon_rebuild_manifest(self):
+    async def test_03_no_icon_rebuild_manifest(self):
         await clear_cache().gdo_execute()
         self.assertTrue(GDO_SeoFile.get_by_url('assets/manifest.json') is not None, 'Cannot create empty manifest.')
 

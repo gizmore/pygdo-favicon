@@ -29,14 +29,14 @@ class IcoGenerator:
             seo_file = GDO_SeoFile.get_by_url(dest_path) or GDO_SeoFile.blank({'sf_url': dest_path})
             new_path = ImageConverter.convert(src_path, Application.temp_path(dest_path), to_fmt, dim)
             gdo_file = GDO_File.blank({
-                'file_name': Strings.rsubstr_from(dest_path, '/', dest_path),
+                'file_name': Strings.rsubstr_from(new_path, '/', new_path),
                 'file_size': str(Files.size(new_path)),
                 'file_mime': Files.mime(new_path),
                 'file_hash': Files.md5(new_path),
                 'file_width': str(dim[0]),
                 'file_height': str(dim[1]),
-            }).insert()
-            Files.move(new_path, gdo_file.get_path())
+            }).temp_path(new_path).no_delete(False).insert()
+            # Files.move(new_path, gdo_file.get_path())
             seo_file.set_val('sf_file', gdo_file.get_id())
             seo_file.save()
         except Exception as e:
@@ -79,6 +79,7 @@ class IcoGenerator:
             }).insert()
         else:
             gdo_file = seo_file.gdo_value('sf_file')[0]
+
         Files.put_contents(gdo_file.get_path(), content)
         gdo_file.set_vals({
             'file_size': str(len(content.encode())),
