@@ -50,17 +50,18 @@ class IcoGenerator:
     @classmethod
     def generate_manifest(cls):
         path = 'assets/manifest.json'
-        rev = GDO_Module.CORE_REV
+        rev = GDO_Module.av_cache_key()
         content = f"""
                 {{
                     "name": "{t('sitename')}",
+                    "pygdo_rev": "{rev}",
                     "short_name": "{Application.config('core.sitename')}",
                     "description": "{t('sitedesc')}",
                     "start_url": "{Application.config('core.web_root')}",
                     "scope": "{Application.config('core.web_root')}",
                     "display": "standalone",
-                    "background_color": "#{module_config_var('favicon', 'bg_color')[0:6]}",
-                    "theme_color": "#{module_config_var('favicon', 'theme_color')[0:6]}",
+                    "background_color": "{module_config_var('favicon', 'bg_color')}",
+                    "theme_color": "{module_config_var('favicon', 'theme_color')}",
                     "icons": [
                         {{
                             "src": "/assets/favicon192.png?{rev}", "sizes": "192x192", "type": "image/png"
